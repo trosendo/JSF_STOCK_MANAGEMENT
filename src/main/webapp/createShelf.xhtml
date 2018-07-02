@@ -1,0 +1,124 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+
+<h:body>
+
+
+
+	<!-- https://www.primefaces.org/showcase/ui/misc/resetInput.xhtml -->
+
+	<p:panelGrid columns="2" layout="grid" styleClass="">
+
+		<h:form>
+			<p:menu model="#{menuView.model}" />
+		</h:form>
+
+		<h:form id="form">
+			<p:panel id="panel" header="Novo Prateleira"
+				style="margin-bottom:10px;">
+				<p:messages id="messages" />
+				<h:panelGrid columns="3" cellpadding="9">
+					<p:outputLabel for="capacity" value="Capacidade:" />
+					<p:inputText id="capacity" required="true"
+						value="#{createShelf.capacity}">
+						<f:validateLength minimum="1" />
+						<f:convertNumber integerOnly="true" />
+					</p:inputText>
+					<span>Unidades</span>
+
+					<p:outputLabel for="rent" value="Aluguer Diário:" />
+					<p:inputText id="rent" required="true" value="#{createShelf.rent}">
+						<f:validateLength minimum="1" />
+						<f:convertNumber minFractionDigits="1" maxFractionDigits="2" />
+					</p:inputText>
+					<span>€</span>
+
+
+					<p:outputLabel for="product" value="Produto: " />
+					<h:selectOneMenu id="product" value="#{createShelf.productID}"
+						required="false" style="width:100%">
+						<f:selectItem itemValue="#{null}" itemLabel="--select--" />
+						<f:selectItems value="#{createShelf.getProducts()}" var="p"
+							itemLabel="#{p.ID}" itemValue="#{p.ID}" />
+					</h:selectOneMenu>
+				</h:panelGrid>
+				<h:outputText value="#{createShelf.success}" />
+			</p:panel>
+
+			<p:toolbar>
+				<f:facet name="right">
+					<p:commandButton value="Submit" update=":form table-form @parent"
+						action="#{createShelf.save()}" style="margin-right:20px;">
+					</p:commandButton>
+
+				</f:facet>
+			</p:toolbar>
+		</h:form>
+
+
+
+
+	</p:panelGrid>
+
+	<h:form id="table-form">
+		<p:growl id="msgs" showDetail="true" />
+
+		<p:dataTable id="shelves" var="s" value="#{detailsShelf.getShelves()}"
+			editable="true" style="margin-bottom:20px">
+			<f:facet name="header">
+           			Prateleiras
+       			</f:facet>
+
+			<p:ajax event="rowEdit" listener="#{detailsShelf.onRowEdit}"
+				update=":table-form:msgs" />
+			<p:ajax event="rowEditCancel" listener="#{detailsShelf.onRowCancel}"
+				update=":table-form:msgs" />
+
+			<p:column headerText="ID">
+				<h:outputText value="#{s.ID}" />
+			</p:column>
+
+			<p:column headerText="Capacidade">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{s.capacity}">
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{s.capacity}" style="width:100%"
+							label="Capacidade" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+
+			<p:column headerText="Aluguer Diário">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{s.dailyRent}">
+							<f:convertNumber type="currency" currencySymbol="€" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{s.dailyRent}" style="width:100%"
+							label="Renda" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			
+			<p:column headerText="Produto">
+				<h:outputText value="#{s.getProductString()}" />
+			</p:column>
+
+			<p:column style="width:32px">
+				<p:rowEditor />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+
+</h:body>
+</html>

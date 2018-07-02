@@ -1,0 +1,6 @@
+
+target/JSF_STOCK_MANAGEMENT/WEB-INF/lib/*
+.idea/*
+.settings/*
+*.iml
+target/*
