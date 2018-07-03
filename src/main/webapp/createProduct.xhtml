@@ -1,85 +1,71 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <h:head>
     <title>Stock Management</title>
+    <h:outputStylesheet library="css" name="style.css"  />
 </h:head>
 
 <h:body>
 
-
-    <!-- https://www.primefaces.org/showcase/ui/misc/resetInput.xhtml -->
-
-    <p:panelGrid columns="2" layout="grid" styleClass="">
-
-        <h:form>
-            <p:menu model="#{menuView.model}"/>
-        </h:form>
-
-        <h:form id="create-form">
-            <p:panel id="panel" header="Novo Produto" style="margin-bottom:10px;">
-                <!--<p:messages id="messages" />-->
-                <h:panelGrid columns="3" cellpadding="9">
-                    <p:outputLabel for="discount" value="Desconto:"/>
-                    <p:inputText id="discount" required="true"
-                                 value="#{createProduct.discount}">
-                        <f:validateLength minimum="1"/>
-                        <f:convertNumber minFractionDigits="1" maxFractionDigits="2"/>
-                    </p:inputText>
-                    <span>%</span>
-
-                    <p:outputLabel for="iva" value="IVA:"/>
-                    <p:inputText id="iva" required="true" value="#{createProduct.iva}">
-                        <f:validateLength minimum="1"/>
-                        <f:convertNumber minFractionDigits="1" maxFractionDigits="2"/>
-                    </p:inputText>
-                    <span>%</span>
-
-                    <p:outputLabel for="pvp" value="PVP:"/>
-                    <p:inputText id="pvp" required="true" value="#{createProduct.pvp}">
-                        <f:validateLength minimum="1"/>
-                        <f:convertNumber minFractionDigits="1" maxFractionDigits="2"/>
-                    </p:inputText>
-                    <span>€</span>
-                    <p:outputLabel for="shelf" value="Prateleiras: "/>
-                    <p:selectCheckboxMenu id="shelf" value="#{createProduct.shelvesID}" multiple="true" filter="true"
-                                          filterMatchMode="startsWith"
-                                          required="false" style="width:100%">
-                        <f:selectItems value="#{createProduct.getShelves()}" var="s"
-                                       itemLabel="#{s.ID}" itemValue="#{s.ID}"/>
-                    </p:selectCheckboxMenu>
-                </h:panelGrid>
-            </p:panel>
-
-            <p:toolbar>
-                <f:facet name="right">
-                    <p:commandButton value="Submit"
-                                     update=":create-form shelf table-form @parent"
-                                     action="#{createProduct.save()}" style="margin-right:20px;">
-                    </p:commandButton>
-                </f:facet>
-            </p:toolbar>
-        </h:form>
+    <ui:include src="/WEB-INF/templates/commonHeader.xhtml" />
 
 
-    </p:panelGrid>
+    <h:form id="create-form" class="center">
+        <p:panel id="panel" header="Novo Produto" >
+            <!--<p:messages id="messages" />-->
+            <h:panelGrid columns="2" cellpadding="9" class="center">
+                <p:outputLabel for="discount" value="Desconto:"/>
+                <p:spinner id="discount" required="true" value="#{createProduct.discount}" max="100" min="0" suffix="%" >
+                    <f:convertNumber integerOnly="true"/>
+                </p:spinner>
 
-    <h:form id="table-form">
+                <p:outputLabel for="iva" value="IVA:"/>
+                <p:spinner id="iva" required="true" value="#{createProduct.iva}" max="100" min="0" suffix="%" >
+                    <f:convertNumber integerOnly="true"/>
+                </p:spinner>
+
+                <p:outputLabel for="pvp" value="PVP:"/>
+                <p:spinner id="pvp" required="true" value="#{createProduct.pvp}" min="0.00" suffix="€" stepFactor="0.25">
+                    <f:convertNumber integerOnly="false" minFractionDigits="2" maxFractionDigits="2"/>
+                </p:spinner>
+
+                <p:outputLabel for="shelf" value="Prateleiras: "/>
+                <p:selectCheckboxMenu id="shelf" value="#{createProduct.shelvesID}" multiple="true" filter="true"
+                                      filterMatchMode="startsWith"
+                                      required="false" style="width:100%">
+                    <f:selectItems value="#{createProduct.getShelves()}" var="s"
+                                   itemLabel="#{s.ID}" itemValue="#{s.ID}"/>
+                </p:selectCheckboxMenu>
+            </h:panelGrid>
+        </p:panel>
+
+        <p:toolbar>
+            <f:facet name="right">
+                <p:commandButton value="Submit"
+                                 update=":create-form shelf table-form @parent"
+                                 action="#{createProduct.save()}" style="margin-right:20px;">
+                </p:commandButton>
+            </f:facet>
+        </p:toolbar>
+    </h:form>
+<br/>
+
+    <h:form id="table-form" class="center">
         <p:growl id="msgs" showDetail="true"/>
 
-        <p:dataTable id="products" var="p"
-                     value="#{detailsProduct.getProducts()}" editable="true"
-                     style="margin-bottom:20px">
+        <p:dataTable id="products" var="p" value="#{detailsProduct.getProducts()}" editable="true" style="margin-bottom:20px" paginator="true" rows="5" paginatorPosition="bottom">
             <f:facet name="header">
-                Produtos
+                <h:outputText value="Produtos" />
             </f:facet>
 
             <p:ajax event="rowEdit" listener="#{detailsProduct.onRowEdit}" update=":table-form:msgs"/>
             <p:ajax event="rowEditCancel" listener="#{detailsProduct.onRowCancel}" update=":table-form:msgs"/>
 
-            <p:column headerText="ID">
+            <p:column headerText="ID" >
                 <h:outputText value="#{p.ID}"/>
             </p:column>
 
@@ -110,7 +96,7 @@
                 </p:cellEditor>
             </p:column>
 
-            <p:column headerText="PVP">
+            <p:column headerText="PVP" >
                 <p:cellEditor>
                     <f:facet name="output">
                         <h:outputText value="#{p.PVP}">
@@ -129,14 +115,9 @@
                         <h:outputText value="#{p.getShelvesString()}"/>
                     </f:facet>
                     <f:facet name="input">
-                        <p:selectCheckboxMenu id="shelves" value="#{detailsProduct.updatedShelves}" multiple="true" filter="true"
-                                              filterMatchMode="startsWith"
-                                              required="false" style="width:100%">
-                            <f:selectItem itemLabel="Desassociar todas" itemValue="#{-1}" noSelectionOption="false"/>
-                            <f:selectItems value="#{createProduct.getShelves()}" var="s"
-                                           itemLabel="#{s.ID}" itemValue="#{s.ID}">
-                                <f:param name="product" value="p" />
-                            </f:selectItems>
+                        <p:selectCheckboxMenu id="shelves" value="#{detailsProduct.updatedShelves}" multiple="true" filter="true" filterMatchMode="startsWith" required="false" style="width:100%">
+                            <f:selectItem itemLabel="Desassociar todas" itemValue="#{-1}" noSelectionOption="false" itemDisabled="#{p.shelvesList.isEmpty()}"/>
+                            <f:selectItems value="#{createProduct.getShelves()}" var="s" itemLabel="#{s.ID}" itemValue="#{s.ID}"/>
                         </p:selectCheckboxMenu>
                     </f:facet>
                 </p:cellEditor>
@@ -147,7 +128,7 @@
                 <p:rowEditor/>
             </p:column>
 
-            <p:column style="width:32px">
+            <p:column style="width: 70px" headerText="Remover">
                 <p:commandButton icon="ui-icon-close" title="Remover" action="#{detailsProduct.delete(p.ID)}"
                                  update="table-form:msgs :table-form">
                     <p:confirm header="Confirmação" message="Deseja remover o produto?" icon="ui-icon-alert"/>
@@ -160,6 +141,10 @@
             </p:column>
         </p:dataTable>
     </h:form>
+    <!-- https://www.primefaces.org/showcase/ui/misc/resetInput.xhtml -->
+
+
+
 
 </h:body>
 </html>

@@ -14,10 +14,7 @@ import model.Shelf;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Tom�s Rosendo
- *
- */
+
 @Named("createProduct")
 @RequestScoped
 public class ProductCreate {
@@ -27,10 +24,20 @@ public class ProductCreate {
 	double pvp;
 	String[] shelvesID;
 
+	boolean noShelves;
+
 	String success;
 
 	Product product;
 	boolean editable;
+
+	public boolean isNoShelves() {
+		return getShelves() == null || getShelves().isEmpty();
+	}
+
+	public void setNoShelves(boolean noShelves) {
+		this.noShelves = noShelves;
+	}
 
 	public boolean isEditable() {
 		return editable;

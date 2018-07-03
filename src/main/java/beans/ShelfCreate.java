@@ -1,6 +1,8 @@
 package beans;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import controller.ProductService;
@@ -72,6 +74,8 @@ public class ShelfCreate {
         } else {
         	success = "Erro!";
         }
+		FacesMessage msg = new FacesMessage(success, "ID associado: " + r);
+		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 	
 	public List<Product> getProducts(){

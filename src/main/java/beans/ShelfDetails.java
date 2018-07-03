@@ -39,4 +39,14 @@ public class ShelfDetails {
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
+
+    public void delete(long id) {
+        if(ShelfService.removeShelf(id) == -1){
+            FacesMessage msg = new FacesMessage("Erro a remover prateleira!", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } else {
+            FacesMessage msg = new FacesMessage("Prateleira removida com sucesso!", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
 }

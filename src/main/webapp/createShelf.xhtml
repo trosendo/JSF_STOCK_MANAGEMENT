@@ -1,71 +1,63 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <h:head>
+	<title>Stock Management</title>
+	<h:outputStylesheet library="css" name="style.css"  />
 </h:head>
 
 <h:body>
 
 
+	<ui:include src="/WEB-INF/templates/commonHeader.xhtml" />
 
 	<!-- https://www.primefaces.org/showcase/ui/misc/resetInput.xhtml -->
 
-	<p:panelGrid columns="2" layout="grid" styleClass="">
-
-		<h:form>
-			<p:menu model="#{menuView.model}" />
-		</h:form>
-
-		<h:form id="form">
-			<p:panel id="panel" header="Novo Prateleira"
-				style="margin-bottom:10px;">
-				<p:messages id="messages" />
-				<h:panelGrid columns="3" cellpadding="9">
-					<p:outputLabel for="capacity" value="Capacidade:" />
-					<p:inputText id="capacity" required="true"
-						value="#{createShelf.capacity}">
-						<f:validateLength minimum="1" />
-						<f:convertNumber integerOnly="true" />
-					</p:inputText>
-					<span>Unidades</span>
-
-					<p:outputLabel for="rent" value="Aluguer Diário:" />
-					<p:inputText id="rent" required="true" value="#{createShelf.rent}">
-						<f:validateLength minimum="1" />
-						<f:convertNumber minFractionDigits="1" maxFractionDigits="2" />
-					</p:inputText>
-					<span>€</span>
 
 
-					<p:outputLabel for="product" value="Produto: " />
-					<h:selectOneMenu id="product" value="#{createShelf.productID}"
-						required="false" style="width:100%">
-						<f:selectItem itemValue="#{null}" itemLabel="--select--" />
-						<f:selectItems value="#{createShelf.getProducts()}" var="p"
-							itemLabel="#{p.ID}" itemValue="#{p.ID}" />
-					</h:selectOneMenu>
-				</h:panelGrid>
-				<h:outputText value="#{createShelf.success}" />
-			</p:panel>
+	<h:form id="form" class="center">
+		<p:panel id="panel" header="Novo Prateleira">
+			<h:panelGrid columns="3" cellpadding="9" class="center">
+				<p:outputLabel for="capacity" value="Capacidade:" />
+				<p:inputText id="capacity" required="true"
+					value="#{createShelf.capacity}">
+					<f:validateLength minimum="1" />
+					<f:convertNumber integerOnly="true" />
+				</p:inputText>
+				<span>Unidades</span>
 
-			<p:toolbar>
-				<f:facet name="right">
-					<p:commandButton value="Submit" update=":form table-form @parent"
-						action="#{createShelf.save()}" style="margin-right:20px;">
-					</p:commandButton>
-
-				</f:facet>
-			</p:toolbar>
-		</h:form>
+				<p:outputLabel for="rent" value="Aluguer Diário:" />
+				<p:inputText id="rent" required="true" value="#{createShelf.rent}">
+					<f:validateLength minimum="1" />
+					<f:convertNumber minFractionDigits="1" maxFractionDigits="2" />
+				</p:inputText>
+				<span>€</span>
 
 
+				<p:outputLabel for="product" value="Produto: " />
+				<h:selectOneMenu id="product" value="#{createShelf.productID}"
+					required="false" style="width:100%">
+					<f:selectItem itemValue="#{null}" itemLabel="--select--" />
+					<f:selectItems value="#{createShelf.getProducts()}" var="p"
+						itemLabel="#{p.ID}" itemValue="#{p.ID}" />
+				</h:selectOneMenu>
+			</h:panelGrid>
+		</p:panel>
 
+		<p:toolbar>
+			<f:facet name="right">
+				<p:commandButton value="Submit" update=":form table-form @parent"
+					action="#{createShelf.save()}" style="margin-right:20px;">
+				</p:commandButton>
 
-	</p:panelGrid>
-
-	<h:form id="table-form">
+			</f:facet>
+		</p:toolbar>
+	</h:form>
+<br/>
+	<h:form id="table-form" class="center">
 		<p:growl id="msgs" showDetail="true" />
 
 		<p:dataTable id="shelves" var="s" value="#{detailsShelf.getShelves()}"
@@ -116,6 +108,18 @@
 
 			<p:column style="width:32px">
 				<p:rowEditor />
+			</p:column>
+
+			<p:column style="width: 70px" headerText="Remover" >
+				<p:commandButton icon="ui-icon-close" title="Remover" action="#{detailsShelf.delete(s.ID)}"
+								 update="table-form:msgs :table-form" >
+					<p:confirm header="Confirmação" message="Deseja remover a prateleira?" icon="ui-icon-alert"/>
+				</p:commandButton>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+					<p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+				</p:confirmDialog>
 			</p:column>
 		</p:dataTable>
 	</h:form>
