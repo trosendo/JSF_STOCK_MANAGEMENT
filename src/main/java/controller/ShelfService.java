@@ -15,6 +15,14 @@ import javax.enterprise.context.ApplicationScoped;
 public class ShelfService {
     private static ShelfRepository shelfDB = ShelfRepository.getInstance();
 
+    public static long storeShelf(Shelf s){
+        Shelf temp = new Shelf();
+        temp.setCapacity(s.getCapacity());
+        temp.setDailyRent(s.getDailyRent());
+        temp.setProduct(s.getProduct());
+        return (shelfDB.storeEntity(temp) != null) ? temp.getEntityID() : -1;
+    }
+
     public static List<Shelf> getShelves(boolean emptyShelvesOnly) {
         Collection<Shelf> collection = shelfDB.getValues();
         List<Shelf> data = new ArrayList<>();
@@ -23,7 +31,7 @@ public class ShelfService {
         }
         for (Shelf shelf : collection) {
         	if(emptyShelvesOnly) {
-        		if(shelf.getProduct() == null) {
+        		if(shelf.getProduct() == -1) {
         			data.add(shelf);
         		}
         	} else {
@@ -36,12 +44,12 @@ public class ShelfService {
     public static long createShelf(int capacity, double rent, long productID) {
         Product p;
         p = ProductService.getProduct(productID);
-        Shelf s = new Shelf(capacity, rent, p);
+        Shelf s = new Shelf(capacity, rent, p.getEntityID());
         if (shelfDB.storeEntity(s) != null) {
             if (p != null) {
                 ProductService.updateProduct(p, s);
             }
-            return s.getID();
+            return s.getEntityID();
         } else {
             return -1;
         }
@@ -52,7 +60,7 @@ public class ShelfService {
     }
 
     static void updateShelf(Shelf s, Product p) {
-        s.setProduct(p);
+        s.setProduct(p.getEntityID());
     }
 
     public static int addedShelves() {
@@ -68,10 +76,10 @@ public class ShelfService {
         if (s == null) {
             return null;
         }
-        return new String[]{Long.toString(s.getID()),
+        return new String[]{Long.toString(s.getEntityID()),
                 Integer.toString(s.getCapacity()),
                 Double.toString(s.getDailyRent()),
-                (s.getProduct() == null) ? "-1" : Long.toString(s.getProduct().getID())};
+                String.valueOf(s.getProduct())};
     }
 
     public static boolean editShelf(long id, int capacity, double rent, long productID) {
@@ -84,8 +92,8 @@ public class ShelfService {
         if (productID != -1) {
             Product p = ProductService.getProduct(productID);
             if (p != null) {
-                ProductService.removeShelfFromProduct(s.getProduct(), s);
-                s.setProduct(p);
+                ProductService.removeShelfFromProduct(ProductService.getProduct(s.getProduct()), s);
+                s.setProduct(p.getEntityID());
                 ProductService.updateProduct(p, s);
                 return true;
             } else {
@@ -93,8 +101,8 @@ public class ShelfService {
                 return true;
             }
         } else {
-            ProductService.removeShelfFromProduct(s.getProduct(), s);
-            s.setProduct(null);
+            ProductService.removeShelfFromProduct(ProductService.getProduct(s.getProduct()), s);
+            s.setProduct(-1);
             return true;
         }
     }
@@ -104,7 +112,7 @@ public class ShelfService {
         if (s == null) {
             return -1;
         }
-        Product p = s.getProduct();
+        Product p = ProductService.getProduct(s.getProduct());
         if (p != null) {
             p.removeShelf(s);
         }

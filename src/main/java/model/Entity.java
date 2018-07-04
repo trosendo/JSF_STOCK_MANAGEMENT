@@ -1,13 +1,30 @@
 package model;
 
-public abstract class Entity {
-    private long id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-    public void setID(long id) {
-        this.id = id;
+@javax.persistence.Entity
+public abstract class Entity {
+    private long entityID;
+
+    public void setEntityID(long entityID) {
+        this.entityID = entityID;
     }
 
-    public long getID() {
+    public long getEntityID() {
+        return entityID;
+    }
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+
+    public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

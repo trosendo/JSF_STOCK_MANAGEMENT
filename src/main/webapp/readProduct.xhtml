@@ -15,10 +15,10 @@
 			<p:menu model="#{menuView.model}" />
 		</h:form>
 
-		<h:form id="form">
-			<p:growl id="msgs" showDetail="true" />
+		<h:form entityID="form">
+			<p:growl entityID="msgs" showDetail="true" />
 
-			<p:dataTable id="products" var="p"
+			<p:dataTable entityID="products" var="p"
 				value="#{detailsProduct.getProducts()}" editable="true"
 				style="margin-bottom:20px">
 				<f:facet name="header">

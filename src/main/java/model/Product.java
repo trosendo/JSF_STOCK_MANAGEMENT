@@ -1,10 +1,13 @@
 package model;
 
+import javax.enterprise.context.RequestScoped;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Product extends Entity {
+@RequestScoped
+public class Product extends model.Entity {
 
-    private ArrayList<Shelf> shelvesList;
+    private List<Shelf>  shelvesList = new ArrayList<>();
     private double discount;
     private double iva;
     private double pvp;
@@ -16,17 +19,26 @@ public class Product extends Entity {
         this.iva = iva;
         this.pvp = pvp;
         if (shelf != null) {
-            shelves = Long.toString(shelf.getID());
+            shelves = Long.toString(shelf.getEntityID());
             shelvesList.add(shelf);
         }
+    }
+
+
+    public Product(){
     }
 
     public String getShelvesString() {
         return shelves;
     }
 
-    public ArrayList<Shelf> getShelvesList() {
+    public List<Shelf> getShelvesList() {
         return shelvesList;
+    }
+    public void setShelvesList(List<Shelf> shelvesList) {
+        for(Shelf s : shelvesList){
+            s.setProduct(this.getEntityID());
+        }
     }
 
     public void addShelf(Shelf shelf) {
@@ -46,7 +58,7 @@ public class Product extends Entity {
 
     public void setShelves(ArrayList<Shelf> shelves) {
         for (Shelf s : shelvesList) {
-            s.setProduct(null);
+            s.setProduct(-1);
         }
         shelvesList.clear();
         shelvesList.addAll(shelves);
@@ -61,27 +73,27 @@ public class Product extends Entity {
         this.discount = discount;
     }
 
-    public double getIVA() {
+    public double getIva() {
         return iva;
     }
 
-    public void setIVA(double iva) {
+    public void setIva(double iva) {
         this.iva = iva;
     }
 
-    public double getPVP() {
+    public double getPvp() {
         return pvp;
     }
 
-    public void setPVP(double pvp) {
+    public void setPvp(double pvp) {
         this.pvp = pvp;
     }
 
     public String[] getDetails() {
-        String[] arr = {Long.toString(getID()),
+        String[] arr = {Long.toString(getEntityID()),
                 Double.toString(getDiscount()),
-                Double.toString(getIVA()),
-                Double.toString(getPVP()),
+                Double.toString(getIva()),
+                Double.toString(getPvp()),
                 shelves};
         return arr;
     }
@@ -91,9 +103,11 @@ public class Product extends Entity {
             shelves = "---";
             return;
         }
-        shelves = Long.toString(shelvesList.get(0).getID());
+        shelves = Long.toString(shelvesList.get(0).getEntityID());
         for (int i = 1; i < shelvesList.size(); i++) {
-            shelves += ";" + Long.toString(shelvesList.get(i).getID());
+            shelves += ";" + Long.toString(shelvesList.get(i).getEntityID());
         }
     }
+
+
 }

@@ -19,26 +19,23 @@
             <!--<p:messages id="messages" />-->
             <h:panelGrid columns="2" cellpadding="9" class="center">
                 <p:outputLabel for="discount" value="Desconto:"/>
-                <p:spinner id="discount" required="true" value="#{createProduct.discount}" max="100" min="0" suffix="%" >
+                <p:spinner id="discount" required="true" value="#{createProduct.product.discount}" max="100" min="0" suffix="%" >
                     <f:convertNumber integerOnly="true"/>
                 </p:spinner>
 
                 <p:outputLabel for="iva" value="IVA:"/>
-                <p:spinner id="iva" required="true" value="#{createProduct.iva}" max="100" min="0" suffix="%" >
+                <p:spinner id="iva" required="true" value="#{createProduct.product.iva}" max="100" min="0" suffix="%" >
                     <f:convertNumber integerOnly="true"/>
                 </p:spinner>
 
                 <p:outputLabel for="pvp" value="PVP:"/>
-                <p:spinner id="pvp" required="true" value="#{createProduct.pvp}" min="0.00" suffix="€" stepFactor="0.25">
+                <p:spinner id="pvp" required="true" value="#{createProduct.product.pvp}" min="0.00" suffix="€" stepFactor="0.25">
                     <f:convertNumber integerOnly="false" minFractionDigits="2" maxFractionDigits="2"/>
                 </p:spinner>
 
-                <p:outputLabel for="shelf" value="Prateleiras: "/>
-                <p:selectCheckboxMenu id="shelf" value="#{createProduct.shelvesID}" multiple="true" filter="true"
-                                      filterMatchMode="startsWith"
-                                      required="false" style="width:100%">
-                    <f:selectItems value="#{createProduct.getShelves()}" var="s"
-                                   itemLabel="#{s.ID}" itemValue="#{s.ID}"/>
+                <p:outputLabel for="shelf" value="Prateleiras Disponíveis: "/>
+                <p:selectCheckboxMenu id="shelf" value="#{createProduct.product.shelvesList}" multiple="true" filter="true" filterMatchMode="startsWith" required="false" style="width:100%">
+                    <f:selectItems value="#{createProduct.getShelves()}" var="s" itemLabel="#{s.entityID}" itemValue="#{s}" itemDisabled="#{s.product eq null}"/>
                 </p:selectCheckboxMenu>
             </h:panelGrid>
         </p:panel>
@@ -47,7 +44,7 @@
             <f:facet name="right">
                 <p:commandButton value="Submit"
                                  update=":create-form shelf table-form @parent"
-                                 action="#{createProduct.save()}" style="margin-right:20px;">
+                                 action="#{createProduct.save}" style="margin-right:20px;">
                 </p:commandButton>
             </f:facet>
         </p:toolbar>
@@ -66,7 +63,7 @@
             <p:ajax event="rowEditCancel" listener="#{detailsProduct.onRowCancel}" update=":table-form:msgs"/>
 
             <p:column headerText="ID" >
-                <h:outputText value="#{p.ID}"/>
+                <h:outputText value="#{p.entityID}"/>
             </p:column>
 
             <p:column headerText="Desconto">
@@ -86,12 +83,12 @@
             <p:column headerText="IVA">
                 <p:cellEditor>
                     <f:facet name="output">
-                        <h:outputText value="#{p.IVA}">
+                        <h:outputText value="#{p.iva}">
                             <f:convertNumber type="percent"/>
                         </h:outputText>
                     </f:facet>
                     <f:facet name="input">
-                        <p:inputText value="#{p.IVA}" style="width:100%" label="IVA"/>
+                        <p:inputText value="#{p.iva}" style="width:100%" label="IVA"/>
                     </f:facet>
                 </p:cellEditor>
             </p:column>
@@ -99,12 +96,12 @@
             <p:column headerText="PVP" >
                 <p:cellEditor>
                     <f:facet name="output">
-                        <h:outputText value="#{p.PVP}">
+                        <h:outputText value="#{p.pvp}">
                             <f:convertNumber currencySymbol="€" type="currency"/>
                         </h:outputText>
                     </f:facet>
                     <f:facet name="input">
-                        <p:inputText value="#{p.PVP}" style="width:100%" label="PVP"/>
+                        <p:inputText value="#{p.pvp}" style="width:100%" label="PVP"/>
                     </f:facet>
                 </p:cellEditor>
             </p:column>
@@ -117,7 +114,7 @@
                     <f:facet name="input">
                         <p:selectCheckboxMenu id="shelves" value="#{detailsProduct.updatedShelves}" multiple="true" filter="true" filterMatchMode="startsWith" required="false" style="width:100%">
                             <f:selectItem itemLabel="Desassociar todas" itemValue="#{-1}" noSelectionOption="false" itemDisabled="#{p.shelvesList.isEmpty()}"/>
-                            <f:selectItems value="#{createProduct.getShelves()}" var="s" itemLabel="#{s.ID}" itemValue="#{s.ID}"/>
+                            <f:selectItems value="#{createProduct.getShelves()}" var="s" itemLabel="#{s.entityID}" itemValue="#{s}"/>
                         </p:selectCheckboxMenu>
                     </f:facet>
                 </p:cellEditor>
@@ -141,10 +138,6 @@
             </p:column>
         </p:dataTable>
     </h:form>
-    <!-- https://www.primefaces.org/showcase/ui/misc/resetInput.xhtml -->
-
-
-
 
 </h:body>
 </html>

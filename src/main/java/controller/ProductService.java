@@ -1,5 +1,6 @@
 package controller;
 
+import model.DBProduct;
 import model.Product;
 import model.Shelf;
 import repositories.ProductRepository;
@@ -9,16 +10,29 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 
+@Transactional
 @ApplicationScoped
 public class ProductService implements Serializable {
 
-    /**
-	 * 
-	 */
+    @PersistenceContext(unitName = "stock")
+    EntityManager em;
+
 	private static final long serialVersionUID = 1L;
 	private static ProductRepository productDB = ProductRepository.getInstance();
+
+	public long storeProduct(Product p){
+	    DBProduct temp = new DBProduct();
+	    temp.setDiscount(p.getDiscount() / 100);
+	    temp.setIva(p.getIva() / 100);
+	    temp.setPvp(p.getPvp());
+	    em.persist(temp); // associar à table correta!!! TODO
+	    return (productDB.storeEntity(p) != null) ? temp.getEntityID() : -1;
+    }
 
     public static List<Product> getProducts() {
         Collection<Product> c = productDB.getValues();
@@ -38,11 +52,11 @@ public class ProductService implements Serializable {
         	for(Long id: shelves) {
         		Shelf s = ShelfService.getShelf(id);
         		if(s != null) {
-        			s.setProduct(p);
+        			s.setProduct(p.getEntityID());
         		}
         		p.addShelf(s);
         	}
-            return p.getID();
+            return p.getEntityID();
         } else {
             return -1;
         }
@@ -56,7 +70,7 @@ public class ProductService implements Serializable {
             if (s != null) {
                 ShelfService.updateShelf(s, p);
             }
-            return p.getID();
+            return p.getEntityID();
         } else {
             return -1;
         }
@@ -67,10 +81,10 @@ public class ProductService implements Serializable {
         if (p == null) {
             return null;
         }
-        return new String[]{Long.toString(p.getID()),
+        return new String[]{Long.toString(p.getEntityID()),
                 Double.toString(p.getDiscount()),
-                Double.toString(p.getIVA()),
-                Double.toString(p.getPVP()),
+                Double.toString(p.getIva()),
+                Double.toString(p.getPvp()),
                 p.getShelvesString()};
     }
 
@@ -80,8 +94,8 @@ public class ProductService implements Serializable {
             return false;
         }
         p.setDiscount(discount);
-        p.setIVA(iva);
-        p.setPVP(pvp);
+        p.setIva(iva);
+        p.setPvp(pvp);
         ArrayList<Shelf> shelves;
         if (newShelves != null) {
             shelves = ShelfService.getShelves(newShelves);
@@ -89,7 +103,7 @@ public class ProductService implements Serializable {
                 System.out.println("As prateleiras associadas ao produto não foram alteradas!");
             } else {
                 for (Shelf s : shelves) {
-                    Product temp = s.getProduct();
+                    Product temp = productDB.getEntity(s.getProduct());
                     if (temp != null) {
                         temp.removeShelf(s);
                     }
@@ -98,13 +112,13 @@ public class ProductService implements Serializable {
                 p.setShelves(shelves);
             }
         } else {
-            ArrayList<Shelf> arrList = p.getShelvesList();
+            List<Shelf> arrList = p.getShelvesList();
             for (Shelf s : arrList) {
-                s.setProduct(null);
+                s.setProduct(-1);
             }
             p.removeShelves();
         }
-        return p.getDiscount() == discount && p.getIVA() == iva && p.getPVP() == pvp;
+        return p.getDiscount() == discount && p.getIva() == iva && p.getPvp() == pvp;
     }
 
     public static Product getProduct(long productID) {
@@ -130,10 +144,10 @@ public class ProductService implements Serializable {
         if (p == null) {
             return -1;
         }
-        ArrayList<Shelf> shelvesList = p.getShelvesList();
+        List<Shelf> shelvesList = p.getShelvesList();
         if (shelvesList != null) {
             for (Shelf s : shelvesList) {
-                s.setProduct(null);
+                s.setProduct(-1);
             }
         }
         return 0;

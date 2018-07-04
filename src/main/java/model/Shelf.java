@@ -1,17 +1,21 @@
 package model;
 
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class Shelf extends Entity {
     int capacity;
-    Product product;
     double dailyRent;
+    long product = -1;
 
-    public Shelf(int capacity, double dailyRent, Product product) {
+    public Shelf(int capacity, double dailyRent, long product) {
         this.capacity = capacity;
         this.dailyRent = dailyRent;
-        if (product != null) {
-            this.product = product;
-        }
+        this.product = product;
+    }
+
+    public Shelf(){
+
     }
 
     public int getCapacity() {
@@ -22,11 +26,11 @@ public class Shelf extends Entity {
         this.capacity = capacity;
     }
 
-    public Product getProduct() {
+    public long getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(long product) {
         this.product = product;
     }
 
@@ -39,10 +43,10 @@ public class Shelf extends Entity {
     }
     
     public String getProductString() {
-    	if(product == null) {
+    	if(product == -1) {
     		return "---";
     	} else {
-    		return String.valueOf(product.getID());
+    		return String.valueOf(product);
     	}
     }
 

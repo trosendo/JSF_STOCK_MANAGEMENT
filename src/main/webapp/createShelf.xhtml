@@ -23,14 +23,14 @@
 			<h:panelGrid columns="3" cellpadding="9" class="center">
 				<p:outputLabel for="capacity" value="Capacidade:" />
 				<p:inputText id="capacity" required="true"
-					value="#{createShelf.capacity}">
+					value="#{createShelf.shelf.capacity}">
 					<f:validateLength minimum="1" />
 					<f:convertNumber integerOnly="true" />
 				</p:inputText>
 				<span>Unidades</span>
 
 				<p:outputLabel for="rent" value="Aluguer Diário:" />
-				<p:inputText id="rent" required="true" value="#{createShelf.rent}">
+				<p:inputText id="rent" required="true" value="#{createShelf.shelf.dailyRent}">
 					<f:validateLength minimum="1" />
 					<f:convertNumber minFractionDigits="1" maxFractionDigits="2" />
 				</p:inputText>
@@ -38,11 +38,10 @@
 
 
 				<p:outputLabel for="product" value="Produto: " />
-				<h:selectOneMenu id="product" value="#{createShelf.productID}"
+				<h:selectOneMenu id="product" value="#{createShelf.shelf.product}"
 					required="false" style="width:100%">
 					<f:selectItem itemValue="#{null}" itemLabel="--select--" />
-					<f:selectItems value="#{createShelf.getProducts()}" var="p"
-						itemLabel="#{p.ID}" itemValue="#{p.ID}" />
+					<f:selectItems value="#{createShelf.getProducts()}" var="p" itemLabel="#{p.entityID}" itemValue="#{p.entityID}" />
 				</h:selectOneMenu>
 			</h:panelGrid>
 		</p:panel>
@@ -50,7 +49,7 @@
 		<p:toolbar>
 			<f:facet name="right">
 				<p:commandButton value="Submit" update=":form table-form @parent"
-					action="#{createShelf.save()}" style="margin-right:20px;">
+					action="#{createShelf.save}" style="margin-right:20px;">
 				</p:commandButton>
 
 			</f:facet>
@@ -72,7 +71,7 @@
 				update=":table-form:msgs" />
 
 			<p:column headerText="ID">
-				<h:outputText value="#{s.ID}" />
+				<h:outputText value="#{s.entityID}" />
 			</p:column>
 
 			<p:column headerText="Capacidade">

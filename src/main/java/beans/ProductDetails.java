@@ -34,18 +34,18 @@ public class ProductDetails {
 	        for(Long id : updatedShelves){
                 Shelf s = ShelfService.getShelf(id);
                 if(s != null){
-                    s.setProduct(p);
+                    s.setProduct(p.getEntityID());
                     arr.add(s);
                 }
             }
             p.setShelves(arr);
         }
-        FacesMessage msg = new FacesMessage("Produto Editado!", String.valueOf(((Product) event.getObject()).getID()));
+        FacesMessage msg = new FacesMessage("Produto Editado!", String.valueOf(((Product) event.getObject()).getEntityID()));
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 	
 	public void onRowCancel(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Edição Cancelada!", String.valueOf(((Product) event.getObject()).getID()));
+        FacesMessage msg = new FacesMessage("Edição Cancelada!", String.valueOf(((Product) event.getObject()).getEntityID()));
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
      

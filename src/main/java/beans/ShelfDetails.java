@@ -21,12 +21,12 @@ public class ShelfDetails {
 	}
 	
 	public void onRowEdit(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Prateleira Editada!", String.valueOf(((Shelf) event.getObject()).getID()));
+        FacesMessage msg = new FacesMessage("Prateleira Editada!", String.valueOf(((Shelf) event.getObject()).getEntityID()));
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 	
 	public void onRowCancel(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Edição Cancelada!", String.valueOf(((Shelf) event.getObject()).getID()));
+        FacesMessage msg = new FacesMessage("Edição Cancelada!", String.valueOf(((Shelf) event.getObject()).getEntityID()));
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
      

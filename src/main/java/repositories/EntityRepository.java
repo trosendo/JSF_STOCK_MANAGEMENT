@@ -4,14 +4,15 @@ import model.Entity;
 
 import java.util.*;
 
-import javax.enterprise.context.Dependent;
 import java.io.Serializable;
 
-@Dependent
+
 public abstract class EntityRepository<T extends Entity> implements Serializable {
-    /**
-	 * 
-	 */
+
+
+//    @PersistenceContext(unitName = "stock")
+//    private EntityManager em;
+
 	private static final long serialVersionUID = 1L;
 	private HashMap<Long, T> database;
     private long highestID;
@@ -27,9 +28,9 @@ public abstract class EntityRepository<T extends Entity> implements Serializable
     }
 
     public T storeEntity(T obj) {
-        obj.setID(nextID());
-        database.put(obj.getID(), obj);
-        return database.get(obj.getID());
+        obj.setEntityID(nextID());
+        database.put(obj.getEntityID(), obj);
+        return database.get(obj.getEntityID());
     }
 
     public Collection<T> getValues() {
