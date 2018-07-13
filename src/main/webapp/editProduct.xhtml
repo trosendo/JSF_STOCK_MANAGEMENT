@@ -1,0 +1,72 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+    <title>Stock Management</title>
+    <h:outputStylesheet library="css" name="style.css"/>
+</h:head>
+<body>
+
+    <ui:include src="/WEB-INF/templates/commonHeader.xhtml"/>
+
+    <h:form class="center">
+        <p:growl id="growl" sticky="true" showDetail="true"/>
+        <p:panel id="select-panel" header="Escolher Produto">
+            <p:messages/>
+            <h:panelGrid columns="2" columnClasses="label, value" class="center">
+                <h:outputText value="Produto: *"/>
+                <p:selectOneMenu id="product" value="#{editProduct.product}"
+                                 converter="omnifaces.SelectItemsConverter">
+                    <f:selectItem itemLabel="Select One" itemValue=""/>
+                    <f:selectItems value="#{detailsProduct.getProducts()}"/>
+                </p:selectOneMenu>
+            </h:panelGrid>
+        </p:panel>
+        <p:commandButton value="Edit" update="select-panel edit-panel"/>
+
+
+        <p:panel id="edit-panel" header="Editar Prateleiras de (#{editProduct.product})" visible="#{editProduct.product != null}">
+            <p:messages/>
+            <h:panelGrid columns="2" columnClasses="label, value">
+                <p:outputLabel for="discount" value="Desconto:"/>
+                <p:spinner id="discount" value="#{editProduct.product.discount}" max="100" min="0" suffix="%">
+                    <f:convertNumber integerOnly="true"/>
+                </p:spinner>
+
+                <p:outputLabel for="iva" value="IVA:"/>
+                <p:spinner id="iva" value="#{editProduct.product.iva}" max="100" min="0" suffix="%">
+                    <f:convertNumber integerOnly="true"/>
+                </p:spinner>
+
+                <p:outputLabel for="pvp" value="PVP:"/>
+                <p:spinner id="pvp" value="#{editProduct.product.pvp}" min="0.00" suffix="€" stepFactor="0.25"  >
+                    <f:convertNumber integerOnly="false" minFractionDigits="2" maxFractionDigits="2"/>
+                </p:spinner>
+
+                <!--<p:outputLabel for="description" value="Descrição: " />-->
+                <!--<p:inputTextarea id="description" rows="6" cols="33" value="#{editProduct.product.description}" required="false" maxlength="256"/>-->
+
+            </h:panelGrid>
+            <p:dataTable id="datatable" var="s" value="#{detailsShelf.getShelves()}">
+                <p:column headerText="Prateleira">
+                    <h:outputText value="#{s}"
+                                  rendered="#{s.product == null or s.product == editProduct.product}"/>
+                </p:column>
+                <p:column id="action-col" style="width: 90px" headerText="Ação">
+                    <p:commandButton icon="ui-icon-plus" title="Adicionar"
+                                     action="#{editProduct.addShelf(s)}"
+                                     rendered="#{s.product == null}"
+                                     update="@([id$=datatable])"/>                         <!--     UPDATE BUTTONS!!       -->
+                    <p:commandButton icon="ui-icon-minus" title="Remover"
+                                     action="#{editProduct.removeShelf(s)}"
+                                     rendered="#{s.product == editProduct.product}"
+                                     update="@([id$=datatable])"/>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+    </h:form>
+</body>
+</html>

@@ -1,19 +1,16 @@
 package repositories;
 
-import model.Product;
+import model.DBProduct;
+import model.DBShelf;
 
-public class ProductRepository extends EntityRepository<Product> {
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
+import java.util.List;
 
-	private static final long serialVersionUID = 1L;
-	private static final ProductRepository INSTANCE = new ProductRepository();
-
-    private ProductRepository() {
-
+@RequestScoped
+public class ProductRepository extends EntityRepository<DBProduct> {
+    public ProductRepository(){
+        super(DBProduct.class);
     }
-
-    public static ProductRepository getInstance() {
-        return INSTANCE;
-    }
-
 
 }

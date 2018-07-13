@@ -1,19 +1,12 @@
 package repositories;
 
-import model.Shelf;
+import model.DBShelf;
 
-public class ShelfRepository extends EntityRepository<Shelf> {
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private static final ShelfRepository INSTANCE = new ShelfRepository();
+import javax.enterprise.context.RequestScoped;
 
-    private ShelfRepository() {
-
-    }
-
-    public static ShelfRepository getInstance() {
-        return INSTANCE;
+@RequestScoped
+public class ShelfRepository extends EntityRepository<DBShelf> {
+    public ShelfRepository(){
+        super(DBShelf.class);
     }
 }

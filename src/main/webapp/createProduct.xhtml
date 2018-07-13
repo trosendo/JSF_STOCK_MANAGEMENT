@@ -6,25 +6,24 @@
 
 <h:head>
     <title>Stock Management</title>
-    <h:outputStylesheet library="css" name="style.css"  />
+    <h:outputStylesheet library="css" name="style.css"/>
 </h:head>
 
 <h:body>
 
-    <ui:include src="/WEB-INF/templates/commonHeader.xhtml" />
+    <ui:include src="/WEB-INF/templates/commonHeader.xhtml"/>
 
 
     <h:form id="create-form" class="center">
-        <p:panel id="panel" header="Novo Produto" >
-            <!--<p:messages id="messages" />-->
+        <p:panel id="panel" header="Novo Produto">
             <h:panelGrid columns="2" cellpadding="9" class="center">
                 <p:outputLabel for="discount" value="Desconto:"/>
-                <p:spinner id="discount" required="true" value="#{createProduct.product.discount}" max="100" min="0" suffix="%" >
+                <p:spinner id="discount" required="true" value="#{createProduct.product.discount}" max="100" min="0" suffix="%">
                     <f:convertNumber integerOnly="true"/>
                 </p:spinner>
 
                 <p:outputLabel for="iva" value="IVA:"/>
-                <p:spinner id="iva" required="true" value="#{createProduct.product.iva}" max="100" min="0" suffix="%" >
+                <p:spinner id="iva" required="true" value="#{createProduct.product.iva}" max="100" min="0" suffix="%">
                     <f:convertNumber integerOnly="true"/>
                 </p:spinner>
 
@@ -33,101 +32,66 @@
                     <f:convertNumber integerOnly="false" minFractionDigits="2" maxFractionDigits="2"/>
                 </p:spinner>
 
-                <p:outputLabel for="shelf" value="Prateleiras Disponíveis: "/>
-                <p:selectCheckboxMenu id="shelf" value="#{createProduct.product.shelvesList}" multiple="true" filter="true" filterMatchMode="startsWith" required="false" style="width:100%">
-                    <f:selectItems value="#{createProduct.getShelves()}" var="s" itemLabel="#{s.entityID}" itemValue="#{s}" itemDisabled="#{s.product eq null}"/>
-                </p:selectCheckboxMenu>
+                <p:outputLabel for="description" value="Descrição: " />
+                <p:inputTextarea id="description" rows="6" cols="33" value="#{createProduct.product.description}" required="false" maxlength="256"/>
+
             </h:panelGrid>
         </p:panel>
 
         <p:toolbar>
             <f:facet name="right">
-                <p:commandButton value="Submit"
-                                 update=":create-form shelf table-form @parent"
-                                 action="#{createProduct.save}" style="margin-right:20px;">
-                </p:commandButton>
+                <p:commandButton value="Submit" action="#{createProduct.save}" update=":create-form table-form @parent" style="margin-right:20px;"/>
             </f:facet>
         </p:toolbar>
     </h:form>
-<br/>
+
+
 
     <h:form id="table-form" class="center">
+        <p:commandButton icon="ui-icon-arrowrefresh-1-e" action="#{detailsProduct.init()}" update="table-form" styleClass="update-table"/>
+
         <p:growl id="msgs" showDetail="true"/>
 
-        <p:dataTable id="products" var="p" value="#{detailsProduct.getProducts()}" editable="true" style="margin-bottom:20px" paginator="true" rows="5" paginatorPosition="bottom">
+        <p:dataTable id="products" var="p" value="#{detailsProduct.list}" style="margin-bottom:20px"
+                     paginator="true" rows="10" paginatorPosition="bottom">
             <f:facet name="header">
-                <h:outputText value="Produtos" />
+                <h:outputText value="Produtos"/>
             </f:facet>
 
-            <p:ajax event="rowEdit" listener="#{detailsProduct.onRowEdit}" update=":table-form:msgs"/>
-            <p:ajax event="rowEditCancel" listener="#{detailsProduct.onRowCancel}" update=":table-form:msgs"/>
-
-            <p:column headerText="ID" >
+            <p:column headerText="ID">
                 <h:outputText value="#{p.entityID}"/>
             </p:column>
 
             <p:column headerText="Desconto">
-                <p:cellEditor>
-                    <f:facet name="output">
-                        <h:outputText value="#{p.discount}">
-                            <f:convertNumber type="percent"/>
-                        </h:outputText>
-                    </f:facet>
-                    <f:facet name="input">
-                        <p:inputText value="#{p.discount}" style="width:100%"
-                                     label="Desconto"/>
-                    </f:facet>
-                </p:cellEditor>
+                <h:outputText value="#{p.discount}">
+                    <f:convertNumber type="percent"/>
+                </h:outputText>
             </p:column>
 
             <p:column headerText="IVA">
-                <p:cellEditor>
-                    <f:facet name="output">
-                        <h:outputText value="#{p.iva}">
-                            <f:convertNumber type="percent"/>
-                        </h:outputText>
-                    </f:facet>
-                    <f:facet name="input">
-                        <p:inputText value="#{p.iva}" style="width:100%" label="IVA"/>
-                    </f:facet>
-                </p:cellEditor>
+                <h:outputText value="#{p.iva}">
+                    <f:convertNumber type="percent"/>
+                </h:outputText>
             </p:column>
 
-            <p:column headerText="PVP" >
-                <p:cellEditor>
-                    <f:facet name="output">
-                        <h:outputText value="#{p.pvp}">
-                            <f:convertNumber currencySymbol="€" type="currency"/>
-                        </h:outputText>
-                    </f:facet>
-                    <f:facet name="input">
-                        <p:inputText value="#{p.pvp}" style="width:100%" label="PVP"/>
-                    </f:facet>
-                </p:cellEditor>
+            <p:column headerText="PVP">
+                <h:outputText value="#{p.pvp}">
+                    <f:convertNumber currencySymbol="€" type="currency"/>
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="Descrição">
+                    <h:outputText value="#{p.description}" style="width: 100%; height: fit-content"/>
             </p:column>
 
             <p:column headerText="Prateleiras">
-                <p:cellEditor>
-                    <f:facet name="output">
-                        <h:outputText value="#{p.getShelvesString()}"/>
-                    </f:facet>
-                    <f:facet name="input">
-                        <p:selectCheckboxMenu id="shelves" value="#{detailsProduct.updatedShelves}" multiple="true" filter="true" filterMatchMode="startsWith" required="false" style="width:100%">
-                            <f:selectItem itemLabel="Desassociar todas" itemValue="#{-1}" noSelectionOption="false" itemDisabled="#{p.shelvesList.isEmpty()}"/>
-                            <f:selectItems value="#{createProduct.getShelves()}" var="s" itemLabel="#{s.entityID}" itemValue="#{s}"/>
-                        </p:selectCheckboxMenu>
-                    </f:facet>
-                </p:cellEditor>
-
-            </p:column>
-
-            <p:column style="width:32px">
-                <p:rowEditor/>
+                <p:dataList value="#{p.shelves}" var="s" converter="omnifaces.SelectItemsIndexConverter">
+                    #{s.entityID}
+                </p:dataList>
             </p:column>
 
             <p:column style="width: 70px" headerText="Remover">
-                <p:commandButton icon="ui-icon-close" title="Remover" action="#{detailsProduct.delete(p.ID)}"
-                                 update="table-form:msgs :table-form">
+                <p:commandButton icon="ui-icon-close" title="Remover" action="#{detailsProduct.delete(p.entityID)}" update="table-form:msgs :table-form">
                     <p:confirm header="Confirmação" message="Deseja remover o produto?" icon="ui-icon-alert"/>
                 </p:commandButton>
 

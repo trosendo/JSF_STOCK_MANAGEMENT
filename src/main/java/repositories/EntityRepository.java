@@ -1,44 +1,62 @@
 package repositories;
 
+import model.DBProduct;
+import model.DBShelf;
 import model.Entity;
 
-import java.util.*;
-
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public abstract class EntityRepository<T extends Entity> implements Serializable {
+@Transactional
+public abstract class EntityRepository<T extends Entity<Long>> implements Serializable {
 
 
-//    @PersistenceContext(unitName = "stock")
-//    private EntityManager em;
-
-	private static final long serialVersionUID = 1L;
-	private HashMap<Long, T> database;
-    private long highestID;
+    @PersistenceContext
+    private EntityManager em;
+    private Class<T> tClass;
+    private String className;
 
     EntityRepository() {
-        database = new LinkedHashMap<>();
-        highestID = 0;
     }
 
-    private long nextID() {
-        highestID++;
-        return highestID;
+    public EntityRepository(Class<T> tClass){
+        this.tClass = tClass;
+        className = tClass.getSimpleName();
     }
 
-    public T storeEntity(T obj) {
-        obj.setEntityID(nextID());
-        database.put(obj.getEntityID(), obj);
-        return database.get(obj.getEntityID());
-    }
-
-    public Collection<T> getValues() {
-        return database.values();
+    public long storeEntity(T obj) {
+        em.persist(obj);
+        return obj.getEntityID();
     }
 
     public T getEntity(long id) {
-        return database.get(id);
+        return em.find(tClass, id);
+    }
+
+    public T updateEntity(T obj) {
+        return em.merge(obj);
+    }
+
+    public void removeEntity(long id) {
+        T e = getEntity(id);
+        em.remove(e);
+    }
+
+    public List getValues() {
+        if (em == null) {
+            return null;
+        }
+        Query query = em.createQuery("SELECT e FROM " + className + " e");
+        if (query == null) {
+            return null;
+        }
+        return query.getResultList();
     }
 
     public ArrayList<T> getEntities(String[] ids) {
@@ -52,18 +70,6 @@ public abstract class EntityRepository<T extends Entity> implements Serializable
             }
         }
         return (foundAtLeastOne) ? arr : null;
-    }
-
-    public T removeEntity(long id) {
-        return database.remove(id); // if no entity is found this returns null
-    }
-
-    public Set<Long> getKeys() {
-        return database.keySet();
-    }
-
-    public int size() {
-        return database.size();
     }
 
 }

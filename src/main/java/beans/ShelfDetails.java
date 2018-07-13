@@ -1,52 +1,76 @@
 package beans;
 
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Named;
-
+import controller.ShelfService;
+import model.DBShelf;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
 
-import controller.ShelfService;
-import model.Shelf;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.List;
 
 @Named("detailsShelf")
-@ApplicationScoped
-public class ShelfDetails {
-	public List<Shelf> getShelves(){
-		return ShelfService.getShelves(false);
-	}
-	
-	public void onRowEdit(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Prateleira Editada!", String.valueOf(((Shelf) event.getObject()).getEntityID()));
+@RequestScoped
+public class ShelfDetails implements Serializable {
+
+    private List<DBShelf> list;
+
+    @Inject
+    ShelfService ss;
+
+    @PostConstruct
+    public void init() {
+        list = getShelves();
+    }
+
+    public List<DBShelf> getShelves() {
+        List<DBShelf> l = ss.getShelves();
+        if (l == null || l.size() == 0) {
+            return null;
+        }
+        return l;
+    }
+
+    public List<DBShelf> getList() {
+        return list;
+    }
+
+    public void setList(List<DBShelf> list) {
+        this.list = list;
+    }
+
+    public void onRowEdit(RowEditEvent event) {
+        DBShelf s = (DBShelf) event.getObject();
+        ss.updateShelf(s);
+        FacesMessage msg = new FacesMessage("Prateleira Editada!", String.valueOf(((DBShelf) event.getObject()).getEntityID()));
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-	
-	public void onRowCancel(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Edição Cancelada!", String.valueOf(((Shelf) event.getObject()).getEntityID()));
+
+    public void onRowCancel(RowEditEvent event) {
+        FacesMessage msg = new FacesMessage("Edição Cancelada!", String.valueOf(((DBShelf) event.getObject()).getEntityID()));
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-     
+
     public void onCellEdit(CellEditEvent event) {
         Object oldValue = event.getOldValue();
         Object newValue = event.getNewValue();
-         
-        if(newValue != null && !newValue.equals(oldValue)) {
+
+        if (newValue != null && !newValue.equals(oldValue)) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Célula Alterada", "Antes: " + oldValue + ", Depois:" + newValue);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
 
     public void delete(long id) {
-        if(ShelfService.removeShelf(id) == -1){
-            FacesMessage msg = new FacesMessage("Erro a remover prateleira!", "");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } else {
-            FacesMessage msg = new FacesMessage("Prateleira removida com sucesso!", "");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        }
+        ss.removeShelf(id);
+        System.out.println(id);
+        FacesMessage msg = new FacesMessage("Prateleira removida com sucesso!", "");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+
     }
 }

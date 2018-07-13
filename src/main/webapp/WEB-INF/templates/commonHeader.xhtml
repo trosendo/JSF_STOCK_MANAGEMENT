@@ -1,6 +1,5 @@
 <ui:composition
         xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:f="http://xmlns.jcp.org/jsf/core"
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
         xmlns:p="http://primefaces.org/ui">
@@ -9,21 +8,21 @@
         <p:menubar>
             <p:menuitem value="Ínicio" icon="ui-icon-home" url="index.xhtml"/>
             <p:submenu label="Produto" icon="ui-icon-document">
-                <p:menuitem value="Novo" url="createProduct.xhtml" />
-                <p:menuitem value="Editar" url="#" />
-                <p:menuitem value="Procurar" url="#" />
-                <p:menuitem value="Remover" url="#" />
-                <p:separator />
-                <p:menuitem value="Sair" url="#" />
+                <p:menuitem value="Novo" url="createProduct.xhtml"/>
+                <p:menuitem value="Editar" url="editProduct.xhtml"/>
+                <p:menuitem value="Procurar" url="#"/>
+                <p:menuitem value="Remover" url="#"/>
+                <p:separator/>
+                <p:menuitem value="Sair" url="#"/>
             </p:submenu>
 
             <p:submenu label="Prateleira" icon="ui-icon-document">
-                <p:menuitem value="Nova" url="createShelf.xhtml" />
-                <p:menuitem value="Editar" url="#" />
-                <p:menuitem value="Procurar" url="#" />
-                <p:menuitem value="Remover" url="#" />
-                <p:separator />
-                <p:menuitem value="Sair" url="#" />
+                <p:menuitem value="Nova" url="createShelf.xhtml"/>
+                <p:menuitem value="Editar" url="editShelf.xhtml"/>
+                <p:menuitem value="Procurar" url="#"/>
+                <p:menuitem value="Remover" url="#"/>
+                <p:separator/>
+                <p:menuitem value="Sair" url="#"/>
             </p:submenu>
         </p:menubar>
     </h:form>

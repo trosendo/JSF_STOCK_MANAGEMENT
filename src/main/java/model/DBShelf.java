@@ -1,21 +1,35 @@
 package model;
 
+import javax.enterprise.context.SessionScoped;
 import javax.persistence.*;
 import javax.persistence.Entity;
 
-@Entity
-@Table(name = "shelves")
-public class DBShelf extends model.Entity {
 
-    @Column(name="Capacity")
+@Entity
+public class DBShelf extends model.Entity<Long> implements java.io.Serializable {
+
     private int capacity;
-    @Column(name="DailyRent")
     private double dailyRent;
-    @Column(name="ProductID")
-    private long product;
+    @ManyToOne
+    private DBProduct product;
+
+
+    public DBShelf() {
+    }
+
+    public DBShelf(int capacity, double dailyRent) {
+        this.capacity = capacity;
+        this.dailyRent = dailyRent;
+    }
+
+    public DBShelf(int capacity, double iva, double pvp, DBProduct product) {
+        this.capacity = capacity;
+        this.dailyRent = dailyRent;
+        this.product = product;
+    }
 
     public int getCapacity() {
-        return capacity;
+        return this.capacity;
     }
 
     public void setCapacity(int capacity) {
@@ -23,18 +37,23 @@ public class DBShelf extends model.Entity {
     }
 
     public double getDailyRent() {
-        return dailyRent;
+        return this.dailyRent;
     }
 
     public void setDailyRent(double dailyRent) {
         this.dailyRent = dailyRent;
     }
 
-    public long getProduct() {
-        return product;
+    public DBProduct getProduct() {
+        return this.product;
     }
 
-    public void setProduct(long product) {
+    public void setProduct(DBProduct product) {
         this.product = product;
+    }
+
+     @PreRemove
+    public void preRemove(){
+        product.getShelves().remove(this);
     }
 }

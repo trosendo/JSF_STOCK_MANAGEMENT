@@ -1,104 +1,97 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </h:head>
 
 <h:body>
 
-	<p:panelGrid columns="2" layout="grid" styleClass="">
+    <p:panelGrid columns="2" layout="grid" styleClass="">
 
-		<h:form>
-			<p:menu model="#{menuView.model}" />
-		</h:form>
+        <h:form>
+            <p:menu model="#{menuView.model}"/>
+        </h:form>
 
-		<h:form entityID="form">
-			<p:growl entityID="msgs" showDetail="true" />
+        <h:form entityID="form">
+            <p:growl entityID="msgs" showDetail="true"/>
 
-			<p:dataTable entityID="products" var="p"
-				value="#{detailsProduct.getProducts()}" editable="true"
-				style="margin-bottom:20px">
-				<f:facet name="header">
-           			Produtos
-       			</f:facet>
+            <p:dataTable entityID="products" var="p"
+                         value="#{detailsProduct.getProducts()}" editable="true"
+                         style="margin-bottom:20px">
+                <f:facet name="header">
+                    Produtos
+                </f:facet>
 
-				<p:ajax event="rowEdit" listener="#{detailsProduct.onRowEdit}"
-					update=":form:msgs" />
-				<p:ajax event="rowEditCancel" listener="#{detailsProduct.onRowCancel}" update=":form:msgs" />
+                <p:ajax event="rowEdit" listener="#{detailsProduct.onRowEdit}"
+                        update=":form:msgs"/>
+                <p:ajax event="rowEditCancel" listener="#{detailsProduct.onRowCancel}" update=":form:msgs"/>
 
-				<p:column headerText="ID">
-					<h:outputText value="#{p.ID}" />
-				</p:column>
+                <p:column headerText="ID">
+                    <h:outputText value="#{p.ID}"/>
+                </p:column>
 
-				<p:column headerText="Desconto">
-					<p:cellEditor>
-						<f:facet name="output">
-							<h:outputText value="#{p.discount}" />
-						</f:facet>
-						<f:facet name="input">
-							<p:inputText value="#{p.discount}" style="width:100%"
-								label="Desconto" />
-						</f:facet>
-					</p:cellEditor>
-				</p:column>
+                <p:column headerText="Desconto">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{p.discount}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{p.discount}" style="width:100%"
+                                         label="Desconto"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
 
-				<p:column headerText="IVA">
-					<p:cellEditor>
-						<f:facet name="output">
-							<h:outputText value="#{p.IVA}" />
-						</f:facet>
-						<f:facet name="input">
-							<p:inputText value="#{p.IVA}" style="width:100%" label="IVA" />
-						</f:facet>
-					</p:cellEditor>
-				</p:column>
+                <p:column headerText="IVA">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{p.IVA}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{p.IVA}" style="width:100%" label="IVA"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
 
-				<p:column headerText="PVP">
-					<p:cellEditor>
-						<f:facet name="output">
-							<h:outputText value="#{p.PVP}" />
-						</f:facet>
-						<f:facet name="input">
-							<p:inputText value="#{p.PVP}" style="width:100%" label="PVP" />
-						</f:facet>
-					</p:cellEditor>
-				</p:column>
+                <p:column headerText="PVP">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{p.PVP}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputText value="#{p.PVP}" style="width:100%" label="PVP"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
 
-				<p:column style="width:32px">
-					<p:rowEditor />
-				</p:column>
-			</p:dataTable>
-		</h:form>
-
-
+                <p:column style="width:32px">
+                    <p:rowEditor/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
 
 
+        <!-- <p:dataTable var="p" value="#{detailsProduct.getProducts()}">
+            <p:column headerText="ID">
+                <h:outputText value="#{p.ID}" />
+            </p:column>
 
+            <p:column headerText="Desconto">
+                <h:outputText value="#{p.discount}" />
+            </p:column>
 
+            <p:column headerText="IVA">
+                <h:outputText value="#{p.IVA}" />
+            </p:column>
 
-
-
-		<!-- <p:dataTable var="p" value="#{detailsProduct.getProducts()}">
-			<p:column headerText="ID">
-				<h:outputText value="#{p.ID}" />
-			</p:column>
-
-			<p:column headerText="Desconto">
-				<h:outputText value="#{p.discount}" />
-			</p:column>
-
-			<p:column headerText="IVA">
-				<h:outputText value="#{p.IVA}" />
-			</p:column>
-
-			<p:column headerText="PVP">
-				<h:outputText value="#{p.PVP}" />
-			</p:column>
-		</p:dataTable> -->
-	</p:panelGrid>
+            <p:column headerText="PVP">
+                <h:outputText value="#{p.PVP}" />
+            </p:column>
+        </p:dataTable> -->
+    </p:panelGrid>
 
 </h:body>
 </html>

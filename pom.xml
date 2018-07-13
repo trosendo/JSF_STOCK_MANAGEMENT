@@ -41,13 +41,7 @@
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>6.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.primefaces.themes</groupId>
-			<artifactId>delta</artifactId>
-			<version>1.0.10</version>
+			<version>6.1</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.wildfly.swarm/bootstrap -->
@@ -90,6 +84,12 @@
 				<version>8.0.11</version>
 			</dependency>
 		<!-- JPA, HIBERNATE, MySQL... -->
+
+		<dependency>
+			<groupId>org.omnifaces</groupId>
+			<artifactId>omnifaces</artifactId>
+			<version>2.6.9</version>
+		</dependency>
 	</dependencies>
 
 
@@ -117,7 +117,7 @@
 						</goals>
 
 						<configuration>
-							<outputDirectory>${basedir}/target/${build.finalName}/resources
+							<outputDirectory>${basedir}/target/${project.build.finalName}/resources
 							</outputDirectory>
 							<resources>
 								<resource>

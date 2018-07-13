@@ -6,12 +6,13 @@
 
     <persistence-unit name="stock" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <jta-data-source>jdbc/myDS</jta-data-source>
+        <jta-data-source>java:jboss/StockManagement</jta-data-source>
         <properties>
-            <property name="hibernate.archive.autodetection" value="class" />
+            <property name="hibernate.archive.autodetection" value="class"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>

@@ -1,30 +1,46 @@
 package model;
 
+
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 
-@javax.persistence.Entity
-public abstract class Entity {
-    private long entityID;
+@MappedSuperclass
+public abstract class Entity<T extends Number> implements Serializable {
 
-    public void setEntityID(long entityID) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private T entityID;
+
+    public void setEntityID(T entityID) {
         this.entityID = entityID;
     }
 
-    public long getEntityID() {
+    public T getEntityID() {
         return entityID;
     }
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
-
-    public Long getId() {
-        return id;
+    @Override
+    public int hashCode() {
+        return (getEntityID() != null)
+                ? (getClass().getSimpleName().hashCode() + getEntityID().hashCode())
+                : super.hashCode();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public boolean equals(Object other) {
+        return (other != null && getEntityID() != null
+                && other.getClass().isAssignableFrom(getClass())
+                && getClass().isAssignableFrom(other.getClass()))
+                ? getEntityID().equals(((Entity<?>) other).getEntityID())
+                : (other == this);
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s[id=%d]", getClass().getSimpleName(), getEntityID());
+    }
+
 }
